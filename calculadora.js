@@ -3,6 +3,7 @@ let valorActual = document.querySelector('.pantalla');
 let valorAnteriror = "";
 let pocision = 0;
 let operacion = 0;
+let punto = 0;
 let operadores = [];
 let operandos = [];
 
@@ -14,24 +15,28 @@ btn.forEach((btn) => {
                 operadores.push("+");
                 valorActual.value = valorActual.value + '+';
                 valorAnteriror = valorActual.value;
+                punto = 0;
                 break;
             case 'resta':
                 operandos.push(parseFloat(valorOperando()))
                 operadores.push("-");
                 valorActual.value = valorActual.value + '-';
                 valorAnteriror = valorActual.value;
+                punto = 0;
                 break;
             case 'division':
                 operandos.push(parseFloat(valorOperando()))
                 operadores.push("/");
                 valorActual.value = valorActual.value + '/';
                 valorAnteriror = valorActual.value;
+                punto = 0;
                 break;
             case 'multiplicacion':
                 operandos.push(parseFloat(valorOperando()))
                 operadores.push("*");
                 valorActual.value = valorActual.value + '*';
                 valorAnteriror = valorActual.value;
+                punto = 0;
                 break;
             case 'total':
                 operandos.push(parseFloat(valorOperando()));
@@ -41,9 +46,19 @@ btn.forEach((btn) => {
                 operandos = [];
                 valorAnteriror = valorActual.value;
                 operacion = 0;
+                punto = 0;
                 break;
             case 'borrar':
-
+                borrar();
+                break
+            case 'limpiar':
+                limpiar();
+                break
+            case 'punto':
+                if (punto == 0) {
+                    agregar(btn.textContent)
+                    punto = 1;
+                }
                 break
             default:
                 agregar(btn.textContent)
@@ -79,7 +94,7 @@ const valorOperando = () => {
 const total = () => {
     let ops = [...operadores];
     let nums = [...operandos];
-    
+
     for (let i = 0; i < ops.length; i++) {
         if (ops[i] === "*" || ops[i] === "/") {
             let result;
@@ -109,29 +124,47 @@ const total = () => {
         i--;
     }
 
-    
+
     let totalOperacion = nums[0];
     return totalOperacion;
+}
+
+const limpiar = () => {
+    operadores = [];
+    operandos = [];
+    valorAnteriror = valorActual.value;
+    operacion = 0;
+    punto = 0;
+    valorActual.value = 0;
+}
+
+const borrar = ()=>{
+    let valorInput = valorActual.value;
+    if (valorInput.length > 1) {
+        valorActual.value = valorInput.slice(0, -1);
+
+    }else{
+        valorActual.value = 0
+    }
 }
 
 const suma = (num1, num2) => {
     return num1 + num2
 }
 
-function resta(num1, num2) {
+const resta = (num1, num2) => {
     return num1 - num2
 }
 
-function division(num1, num2) {
+const division = (num1, num2) => {
     return num1 / num2;
 }
 
-function exponenciacion(num1, num2) {
+const exponenciacion = (num1, num2) => {
     return num1 ** num2;
 }
 
-
-function multiplicacion(num1, num2) {
+const multiplicacion = (num1, num2) => {
     return num1 * num2
 }
 
