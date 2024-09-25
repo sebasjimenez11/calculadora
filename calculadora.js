@@ -1,5 +1,6 @@
 const btn = document.querySelectorAll('.btn');
 let valorActual = document.querySelector('.pantalla');
+let numeros = ["1","2","3","4","5","6","7","8","9","0"]
 let valorAnteriror = "";
 let operaciones = ['+', '/', '*', '-']
 let pocision = 0;
@@ -7,6 +8,47 @@ let operacion = 0;
 let punto = 0;
 let operadores = [];
 let operandos = [];
+
+
+addEventListener('keypress',(key)=>{
+    switch (key.key) {
+        case "+":
+            calculadora('suma');
+            break;
+        case '-':
+            calculadora('resta');
+            break;
+        case '/':
+            calculadora('division');
+            break;
+        case '*':
+            calculadora('multiplicacion');
+            break;
+        case 'Enter':
+            calculadora('total')
+            break;
+        case 'borrar':
+            calculadora('borrar');
+            break
+        case 'limpiar':
+            calculadora('limpiar')
+            break
+        case '.':
+            calculadora('punto')
+            break
+        default:
+            console.log(key.key)
+            validarNumeros(key.key);
+            break;
+    }
+})
+
+const validarNumeros = (caracter)=>{
+    if(numeros.includes(caracter)){
+        agregar(caracter);
+    }
+}
+
 
 btn.forEach((btn) => {
     btn.addEventListener('click', () => {
