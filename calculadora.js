@@ -40,7 +40,6 @@ document.addEventListener('keydown',(e)=>{
             calculadora('punto')
             break
         default:
-            console.log("key value", e.key);
             validarNumeros(e.key);
             break;
     }
