@@ -19,8 +19,8 @@
 
 .calculadora {
     padding: .5% .3%;
-    width: 22.5vw;
-    height: 69.5vh;
+    width: 250px;
+    height: 400px;
     background-color: #f35b04;
     border-radius: 20px;
     box-shadow: 15px 15px 5px #252422;

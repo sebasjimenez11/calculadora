@@ -1,36 +1,16 @@
 const btn = document.querySelectorAll('.btn');
 let valorActual = document.querySelector('.pantalla');
-let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+let valor = 0;
+let numero = 0;
 let valorAnteriror = "";
-let operaciones = ['+', '/', '*', '-']
-let pocision = 0;
+let operaciones = ['+', '/', '*', '-'];
 let operacion = 0;
 let punto = 0;
-let operadores = [];
-let operandos = [];
-
 
 document.addEventListener('keydown', (e) => {
-
     switch (e.key) {
         case "+":
-            fetch('/calculadora.php?OP=suma', {
-                method: 'GET', // *GET, POST, PUT, DELETE, etc.
-                mode: 'cors', // no-cors, *cors, same-origin
-                cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-                credentials: 'same-origin', // include, *same-origin, omit
-                headers: {
-                    'Content-Type': 'text/html'
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                redirect: 'follow', // manual, *follow, error
-                referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-                // body: JSON.stringify(data) // body data type must match "Content-Type" header
-            })
-                .then(response => response.json()).
-                then(data => {
-                    console.log(data);
-                });
             calculadora('suma');
             break;
         case '-':
@@ -43,32 +23,28 @@ document.addEventListener('keydown', (e) => {
             calculadora('multiplicacion');
             break;
         case 'Enter':
-            calculadora('total')
+            calculadora('total');
             break;
         case 'Backspace':
             calculadora('borrar');
-            break
+            break;
         case 'c':
-            calculadora('limpiar')
-            break
+            calculadora('limpiar');
+            break;
+        case 'Escape':
+            calculadora('limpiar');
+            break;
         case 'C':
-            calculadora('limpiar')
-            break
+            calculadora('limpiar');
+            break;
         case '.':
-            calculadora('punto')
-            break
+            calculadora('punto');
+            break;
         default:
             validarNumeros(e.key);
             break;
     }
-})
-
-const validarNumeros = (caracter) => {
-    if (numeros.includes(caracter)) {
-        agregar(caracter);
-    }
-}
-
+});
 
 btn.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -104,49 +80,33 @@ btn.forEach((btn) => {
     })
 })
 
-const calculadora = (accion) => {
+const calculadora = async (accion) => {
     switch (accion) {
         case 'suma':
-            operandos.push(parseFloat(valorOperando()))
-            operadores.push("+");
-            valorActual.value = valorActual.value + '+';
-            valorAnteriror = valorActual.value;
-            punto = 0;
+            numero = parseFloat(valorOperando());
+            await peticionServidor(numero, 'suma');
+            valorActualPantalla('+');
             break;
         case 'resta':
-            operandos.push(parseFloat(valorOperando()))
-            operadores.push("-");
-            valorActual.value = valorActual.value + '-';
-            valorAnteriror = valorActual.value;
-            punto = 0;
+            numero = parseFloat(valorOperando());
+            await peticionServidor(numero, 'resta');
+            valorActualPantalla('-');
             break;
         case 'division':
-            operandos.push(parseFloat(valorOperando()))
-            operadores.push("/");
-            valorActual.value = valorActual.value + '/';
-            valorAnteriror = valorActual.value;
-            punto = 0;
+            numero = parseFloat(valorOperando());
+            await peticionServidor(numero, 'division');
+            valorActualPantalla('/');
             break;
         case 'multiplicacion':
-            operandos.push(parseFloat(valorOperando()))
-            operadores.push("*");
-            valorActual.value = valorActual.value + '*';
-            valorAnteriror = valorActual.value;
-            punto = 0;
+            numero = parseFloat(valorOperando());
+            await peticionServidor(numero, 'multiplicacion');
+            valorActualPantalla('*');
             break;
         case 'total':
-            console.log("operandos en total: ", operandos);
-            console.log("operadores en total: ", operadores);
-            operandos.push(parseFloat(valorOperando()));
-            const totalOperacion = total();
-            if (isNaN(totalOperacion)) {
-                valorActual.value = "Error";
-            } else {
-                valorActual.value = totalOperacion;
-            }
-            operadores = [];
-            operandos = [];
-            valorAnteriror = valorActual.value;
+            numero = parseFloat(valorOperando());
+            let resultado = await peticionServidor(numero, 'total');
+            valorActual.value = resultado
+            valorAnteriror = resultado;
             operacion = 0;
             punto = 0;
             break;
@@ -168,9 +128,11 @@ const calculadora = (accion) => {
 
 const agregar = (content) => {
     if (valorActual.value == "0") {
-        valorActual.value = content;
+        valor = content;
+        valorActual.value = valor
     } else {
-        valorActual.value = valorActual.value + content;
+        valor = valorActual.value + content
+        valorActual.value = valor
     }
 }
 
@@ -190,58 +152,19 @@ const valorOperando = () => {
     }
 }
 
-const total = () => {
-    let ops = [...operadores];
-    let nums = [...operandos];
-
-    for (let i = 0; i < ops.length; i++) {
-        if (ops[i] === "*" || ops[i] === "/") {
-            let result;
-            if (ops[i] === "*") {
-                result = multiplicacion(nums[i], nums[i + 1]);
-            } else if (ops[i] === "/") {
-                result = division(nums[i], nums[i + 1]);
-            }
-            nums[i] = result;
-            nums.splice(i + 1, 1);
-            ops.splice(i, 1);
-            i--;
-        }
-    }
-
-    for (let i = 0; i < ops.length; i++) {
-        let result;
-        if (ops[i] === "+") {
-            result = suma(nums[i], nums[i + 1]);
-        } else if (ops[i] === "-") {
-            result = resta(nums[i], nums[i + 1]);
-        }
-
-        nums[i] = result;
-        nums.splice(i + 1, 1);
-        ops.splice(i, 1);
-        i--;
-    }
-
-    let totalOperacion = nums[0];
-    return totalOperacion;
-}
-
 const limpiar = () => {
-    operadores = [];
-    operandos = [];
+    peticionServidor('limpiar', 'limpiar');
     valorAnteriror = valorActual.value;
     operacion = 0;
     punto = 0;
     valorActual.value = 0;
 }
 
-const borrar = () => {
+const borrar = async () => {
     let valorInput = valorActual.value;
     if (valorInput.length > 1) {
         if (operaciones.includes(valorInput[valorInput.length - 1])) {
-            operandos.pop();
-            operadores.pop();
+            await peticionServidor('borrar', 'borrar')
             valorActual.value = valorInput.slice(0, -1);
         } else if (valorInput[valorInput.length - 1] === '.') {
             punto = 0;
@@ -256,22 +179,38 @@ const borrar = () => {
     }
 }
 
-const suma = (num1, num2) => {
-    return num1 + num2
+const valorActualPantalla = (signo) => {
+    valorActual.value = valorActual.value + signo;
+    valorAnteriror = valorActual.value;
+    punto = 0;
 }
 
-const resta = (num1, num2) => {
-    return num1 - num2
+const validarNumeros = (caracter) => {
+    if (numeros.includes(caracter)) {
+        agregar(caracter);
+    }
 }
 
-const division = (num1, num2) => {
-    return num1 / num2;
-}
+const peticionServidor = async (valorOperando, operador) => {
+    try {
+        const response = await fetch('/calculadora.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                valor: valorOperando,
+                OP: operador
+            })
+        });
 
-const exponenciacion = (num1, num2) => {
-    return num1 ** num2;
-}
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
 
-const multiplicacion = (num1, num2) => {
-    return num1 * num2
+        const data = await response.json();
+        return data.value;
+    } catch (error) {
+        console.error('Error en la peticion:', error);
+    }
 }
