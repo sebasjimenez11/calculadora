@@ -10,8 +10,8 @@ let operadores = [];
 let operandos = [];
 
 
-addEventListener('keypress',(key)=>{
-    switch (key.key) {
+document.addEventListener('keydown',(e)=>{
+    switch (e.key) {
         case "+":
             calculadora('suma');
             break;
@@ -27,18 +27,21 @@ addEventListener('keypress',(key)=>{
         case 'Enter':
             calculadora('total')
             break;
-        case 'borrar':
+        case 'Backspace':
             calculadora('borrar');
             break
-        case 'limpiar':
+        case 'c':
+            calculadora('limpiar')
+            break
+        case 'C':
             calculadora('limpiar')
             break
         case '.':
             calculadora('punto')
             break
         default:
-            console.log(key.key)
-            validarNumeros(key.key);
+            console.log("key value", e.key);
+            validarNumeros(e.key);
             break;
     }
 })
@@ -115,6 +118,8 @@ const calculadora = (accion) => {
             punto = 0;
             break;
         case 'total':
+            console.log("operandos en total: ", operandos);
+            console.log("operadores en total: ", operadores);
             operandos.push(parseFloat(valorOperando()));
             const totalOperacion = total();
             if (isNaN(totalOperacion)) {
