@@ -14,9 +14,11 @@ document.addEventListener('keydown', (e) => {
 
     switch (e.key) {
         case "+":
-            fetch('/calculadora.php?OP=suma').finally(response => {
-                console.log(response);
-            });
+            fetch('/calculadora.php?OP=suma')
+                .then(response => response.json()).
+                then(data => {
+                    console.log(data);
+                });
             calculadora('suma');
             break;
         case '-':
