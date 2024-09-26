@@ -19,8 +19,8 @@
 
 .calculadora {
     padding: .5% .3%;
-    width: 320px;
-    height: 500px;
+    width: 22.5vw;
+    height: 69.5vh;
     background-color: #f35b04;
     border-radius: 20px;
     box-shadow: 15px 15px 5px #252422;
@@ -38,11 +38,12 @@
     border: .8px solid #403D39;
     font-size: 25px;
     font-weight: 500;
+    resize: none;
 }
 
 .btnBorrar {
-    margin-top: 2%;
-    width: 100%;
+    margin: 1% auto;
+    width: 95%;
     height: 9%;
 }
 
