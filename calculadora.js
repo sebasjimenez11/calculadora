@@ -1,6 +1,6 @@
 const btn = document.querySelectorAll('.btn');
 let valorActual = document.querySelector('.pantalla');
-let numeros = ["1","2","3","4","5","6","7","8","9","0"]
+let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 let valorAnteriror = "";
 let operaciones = ['+', '/', '*', '-']
 let pocision = 0;
@@ -10,9 +10,13 @@ let operadores = [];
 let operandos = [];
 
 
-document.addEventListener('keydown',(e)=>{
+document.addEventListener('keydown', (e) => {
+
     switch (e.key) {
         case "+":
+            fetch('/calculadora.php?OP=suma').finally(response => {
+                console.log(response);
+            });
             calculadora('suma');
             break;
         case '-':
@@ -45,8 +49,8 @@ document.addEventListener('keydown',(e)=>{
     }
 })
 
-const validarNumeros = (caracter)=>{
-    if(numeros.includes(caracter)){
+const validarNumeros = (caracter) => {
+    if (numeros.includes(caracter)) {
         agregar(caracter);
     }
 }
