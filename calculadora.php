@@ -1,7 +1,7 @@
 <?php
 
 include_once 'Classes/Calculadora.php';
-header('content-type', 'text/html');
+header('Content-Type: text/html');
 $calculadora = new Calculadora;
 
 
