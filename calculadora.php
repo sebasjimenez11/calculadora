@@ -14,6 +14,7 @@ if ($Data) {
 
 include_once 'Classes/Calculadora.php';
 $calculadora = new Calculadora;
+$valorOperando = 0;
 
 header('Content-Type: application/json');
 
@@ -21,44 +22,43 @@ if (isset($Data['OP']) && isset($Data['valor'])) {
     switch ($Data['OP']) {
         case 'suma':
             $calculadora->setOperadores('+');
-            $calculadora->setOperandos($Data['valor']);
-            echo json_encode(['value' => $calculadora->getOperandos(), 'guardado' => true]);
+            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '+', $Data['validacion']));
+            $calculadora->setOperandos($valorOperando);
+            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
             break;
 
         case 'resta':
             $calculadora->setOperadores('-');
-            $calculadora->setOperandos($Data['valor']);
-            echo json_encode(['value' => $calculadora->getOperandos(), 'guardado' => true]);
+            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '-', $Data['validacion']));
+            $calculadora->setOperandos($valorOperando);
+            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
             break;
 
         case 'multiplicacion':
             $calculadora->setOperadores('*');
-            $calculadora->setOperandos($Data['valor']);
-            echo json_encode(['value' => $calculadora->getOperandos(), 'guardado' => true]);
+            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '*', $Data['validacion']));
+            $calculadora->setOperandos($valorOperando);
+            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
             break;
 
         case 'division':
             $calculadora->setOperadores('/');
-            $calculadora->setOperandos($Data['valor']);
-            echo json_encode(['value' => $calculadora->getOperandos(), 'guardado' => true]);
+            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '/', $Data['validacion']));
+            $calculadora->setOperandos($valorOperando);
+            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
             break;
 
         case 'total':
-            $calculadora->setOperandos($Data['valor']);
-            $operadores = $calculadora->getOperadores();
-            $operandos = $calculadora->getOperandos();
+            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '', $Data['validacion']));
+            $calculadora->setOperandos($valorOperando);
             $valorTotal = $calculadora->total();
             $calculadora->clear();
             echo json_encode(['value' => $valorTotal]);
             break;
 
         case 'borrar':
-            $operandos = $calculadora->getOperandos();
-            $operadores = $calculadora->getOperadores();
             $calculadora->borrar();
-            echo json_encode([
-                'message' => 'Datos borrados'
-            ]);
+            echo json_encode(['message' => 'Datos borrados']);
             break;
 
         case 'limpiar':
@@ -66,6 +66,9 @@ if (isset($Data['OP']) && isset($Data['valor'])) {
             echo json_encode(['message' => 'Datos limpiados']);
             break;
 
+        case 'historial':
+
+            break;
         default:
             echo json_encode(['Error' => 'Operación no válida']);
             break;

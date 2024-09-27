@@ -1,12 +1,12 @@
 const btn = document.querySelectorAll('.btn');
 let valorActual = document.querySelector('.pantalla');
 let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+let operaciones = ['+', '/', '*', '-'];
 let valor = 0;
 let numero = 0;
-let valorAnteriror = "";
-let operaciones = ['+', '/', '*', '-'];
-let operacion = 0;
+let operacion = true;
 let punto = 0;
+
 
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
@@ -83,32 +83,29 @@ btn.forEach((btn) => {
 const calculadora = async (accion) => {
     switch (accion) {
         case 'suma':
-            numero = parseFloat(valorOperando());
-            await peticionServidor(numero, 'suma');
-            valorActualPantalla('+');
+            valor = await peticionServidor(valorActual.value, 'suma', operacion);
+            valorActualPantalla(valor);
+            operacion = false;
             break;
         case 'resta':
-            numero = parseFloat(valorOperando());
-            await peticionServidor(numero, 'resta');
-            valorActualPantalla('-');
+            valor = await peticionServidor(valorActual.value, 'resta', operacion);
+            valorActualPantalla(valor);
+            operacion = false;
             break;
         case 'division':
-            numero = parseFloat(valorOperando());
-            await peticionServidor(numero, 'division');
-            valorActualPantalla('/');
+            valor = await peticionServidor(valorActual.value, 'division', operacion);
+            valorActualPantalla(valor);
+            operacion = false;
             break;
         case 'multiplicacion':
-            numero = parseFloat(valorOperando());
-            await peticionServidor(numero, 'multiplicacion');
-            valorActualPantalla('*');
+            valor = await peticionServidor(valorActual.value, 'multiplicacion', operacion);
+            valorActualPantalla(valor);
+            operacion = false;
             break;
         case 'total':
-            numero = parseFloat(valorOperando());
-            let resultado = await peticionServidor(numero, 'total');
-            valorActual.value = resultado
-            valorAnteriror = resultado;
-            operacion = 0;
-            punto = 0;
+            valor = await peticionServidor(valorActual.value, 'total', operacion);
+            valorActualPantalla(valor);
+            operacion = true;
             break;
         case 'borrar':
             borrar();
@@ -128,11 +125,9 @@ const calculadora = async (accion) => {
 
 const agregar = (content) => {
     if (valorActual.value == "0") {
-        valor = content;
-        valorActual.value = valor
+        valorActual.value = content;
     } else {
-        valor = valorActual.value + content
-        valorActual.value = valor
+        valorActual.value = valorActual.value + content
     }
 }
 
@@ -156,9 +151,9 @@ const valorOperando = () => {
 const limpiar = () => {
     peticionServidor('limpiar', 'limpiar');
     valorAnteriror = valorActual.value;
-    operacion = 0;
     punto = 0;
     valorActual.value = 0;
+    operacion = true;
 }
 
 const borrar = async () => {
@@ -178,13 +173,13 @@ const borrar = async () => {
         }
     } else {
         valorActual.value = 0;
+        operacion = true;
     }
 }
 
 
-const valorActualPantalla = (signo) => {
-    valorActual.value = valorActual.value + signo;
-    valorAnteriror = valorActual.value;
+const valorActualPantalla = (value) => {
+    valorActual.value = value
     punto = 0;
 }
 
@@ -194,7 +189,7 @@ const validarNumeros = (caracter) => {
     }
 }
 
-const peticionServidor = async (valorOperando, operador) => {
+const peticionServidor = async (valorOperando, operador, validacion) => {
     try {
         const response = await fetch('/calculadora.php', {
             method: 'POST',
@@ -203,7 +198,8 @@ const peticionServidor = async (valorOperando, operador) => {
             },
             body: JSON.stringify({
                 valor: valorOperando,
-                OP: operador
+                OP: operador,
+                validacion: validacion,
             })
         });
 

@@ -70,6 +70,16 @@ class Calculadora
         return $result;
     }
 
+    public function getOperacionAnterior()
+    {
+        return $this->operacionAnterior;
+    }
+
+    public function setOperacionAnterior($operacion)
+    {
+        $this->operacionAnterior = $operacion;
+    }
+
     public function getOperandos()
     {
         return $this->operandos;
@@ -108,23 +118,47 @@ class Calculadora
         }
     }
 
-    public function getNumOperando($operacion, $operador,$validacion){
+    public function getNumOperando($operacion, $operador, $validacion)
+    {
         if ($validacion) {
             $this->operacionAnterior = $operacion . $operador;
+            $this->saveState();
             return $operacion;
-        }else {
-            for ($i=0; $i < $operacion ; $i++) { 
-                
+        } else {
+            $valorOperando = "";
+
+            if (!empty($this->operacionAnterior)) {
+                $minLength = min(strlen($operacion), strlen($this->operacionAnterior));
+
+                for ($i = 0; $i < $minLength; $i++) {
+                    if ($operacion[$i] != $this->operacionAnterior[$i]) {
+                        $valorOperando .= substr($operacion, $i);
+                        break;
+                    }
+                }
+                if (strlen($operacion) > $minLength) {
+                    $valorOperando .= substr($operacion, $minLength);
+                }
+            } else {
+                $valorOperando = $operacion;
             }
+
+            $this->operacionAnterior = $operacion . $operador;
+            $this->saveState();
+
+            return $valorOperando;
         }
     }
+
+
+
 
     public function getHitorial()
     {
         return $this->historial;
     }
 
-    public function setHostoria($operacion, $total)
+    public function setHostorial($operacion, $total)
     {
         array_push($this->historial, [$total => $operacion]);
     }
@@ -141,5 +175,4 @@ class Calculadora
             'historial' => $this->historial
         ];
     }
-
 }
