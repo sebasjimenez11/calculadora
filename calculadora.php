@@ -53,8 +53,12 @@ if (isset($Data['OP']) && isset($Data['valor'])) {
             break;
 
         case 'borrar':
+            $operandos = $calculadora->getOperandos();
+            $operadores = $calculadora->getOperadores();
             $calculadora->borrar();
-            echo json_encode(['message' => 'Datos borrados']);
+            echo json_encode([
+                'message' => 'Datos borrados'
+            ]);
             break;
 
         case 'limpiar':

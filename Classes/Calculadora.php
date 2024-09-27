@@ -4,6 +4,8 @@ class Calculadora
 {
     private $operadores = [];
     private $operandos = [];
+    private $historial = [];
+    private $operacionAnterior;
 
     public function __construct()
     {
@@ -11,6 +13,8 @@ class Calculadora
             $data = $_SESSION['calculadora'];
             $this->operadores = $data['operadores'];
             $this->operandos = $data['operandos'];
+            $this->operacionAnterior = $data['operacionAnterior'];
+            $this->historial = $data['historial'];
         }
     }
 
@@ -97,16 +101,45 @@ class Calculadora
 
     public function borrar()
     {
-        array_slice($this->operadores, 0, -1);
-        array_slice($this->operandos, 0, -1);
-        $this->saveState();
+        if (!empty($this->operadores) && !empty($this->operandos)) {
+            array_pop($this->operadores);
+            array_pop($this->operandos);
+            $this->saveState();
+        }
     }
+
+    public function getNumOperando($operacion, $operador,$validacion){
+        if ($validacion) {
+            $this->operacionAnterior = $operacion . $operador;
+            return $operacion;
+        }else {
+            for ($i=0; $i < $operacion ; $i++) { 
+                
+            }
+        }
+    }
+
+    public function getHitorial()
+    {
+        return $this->historial;
+    }
+
+    public function setHostoria($operacion, $total)
+    {
+        array_push($this->historial, [$total => $operacion]);
+    }
+
+    public function borrarHistorial() {}
+
 
     private function saveState()
     {
         $_SESSION['calculadora'] = [
             'operadores' => $this->operadores,
-            'operandos' => $this->operandos
+            'operandos' => $this->operandos,
+            'operacionAnterior' => $this->operacionAnterior,
+            'historial' => $this->historial
         ];
     }
+
 }

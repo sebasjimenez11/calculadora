@@ -139,10 +139,11 @@ const agregar = (content) => {
 const valorOperando = () => {
     if (operacion === 0) {
         valorAnteriror = valorActual.value;
+        console.log(valorActual.value);
         operacion = 1;
         return valorActual.value;
     } else {
-        let valor = "";
+        let valor = 0;
         for (let i = 0; i < valorActual.value.length; i++) {
             if (valorActual.value[i] != valorAnteriror[i]) {
                 valor += valorActual.value[i];
@@ -164,20 +165,22 @@ const borrar = async () => {
     let valorInput = valorActual.value;
     if (valorInput.length > 1) {
         if (operaciones.includes(valorInput[valorInput.length - 1])) {
-            await peticionServidor('borrar', 'borrar')
             valorActual.value = valorInput.slice(0, -1);
+            valorAnteriror = valorActual.value;
+            await peticionServidor('borrar', 'borrar');
         } else if (valorInput[valorInput.length - 1] === '.') {
             punto = 0;
             valorActual.value = valorInput.slice(0, -1);
         } else if (valorInput === 'Error') {
-            valorActual.value = 0
+            valorActual.value = 0;
         } else {
             valorActual.value = valorInput.slice(0, -1);
         }
     } else {
-        valorActual.value = 0
+        valorActual.value = 0;
     }
 }
+
 
 const valorActualPantalla = (signo) => {
     valorActual.value = valorActual.value + signo;
@@ -207,7 +210,6 @@ const peticionServidor = async (valorOperando, operador) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-
         const data = await response.json();
         return data.value;
     } catch (error) {
