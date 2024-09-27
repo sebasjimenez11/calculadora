@@ -61,19 +61,22 @@ btn.forEach((btn) => {
                 calculadora('multiplicacion');
                 break;
             case 'total':
-                calculadora('total')
+                calculadora('total');
                 break;
             case 'borrar':
                 calculadora('borrar');
-                break
+                break;
             case 'limpiar':
-                calculadora('limpiar')
-                break
+                calculadora('limpiar');
+                break;
             case 'punto':
-                calculadora('punto')
-                break
+                calculadora('punto');
+                break;
+            case 'btn-historial':
+                calculadora('historial')
+                break;
             default:
-                agregar(btn.textContent)
+                agregar(btn.textContent);
                 break;
         }
     })
@@ -108,16 +111,23 @@ const calculadora = async (accion) => {
             break;
         case 'borrar':
             borrar();
-            break
+            break;
         case 'limpiar':
             limpiar();
-            break
+            break;
         case 'punto':
             if (punto == 0) {
-                agregar('.')
+                agregar('.');
                 punto = 1;
             }
-            break
+            break;
+        case 'historial':
+            const data = await peticionServidor('historial', 'historial', true);
+            if (Array.isArray(data)) {
+                for (let i = 0; i < data.length; i++) {
+                    historialCalculadora(data[i].Total, data[i].Operacion)
+                }
+            }
         default: break;
     }
 }
@@ -126,7 +136,7 @@ const agregar = (content) => {
     if (valorActual.value == "0") {
         valorActual.value = content;
     } else {
-        valorActual.value = valorActual.value + content
+        valorActual.value = valorActual.value + content;
     }
 }
 
@@ -161,7 +171,7 @@ const borrar = async () => {
 
 
 const valorActualPantalla = (value) => {
-    valorActual.value = value
+    valorActual.value = value;
     punto = 0;
 }
 
@@ -193,4 +203,20 @@ const peticionServidor = async (valorOperando, operador, validacion) => {
     } catch (error) {
         console.error('Error en la peticion:', error);
     }
+}
+
+const historialCalculadora = async (resultado, operacion) => {
+    let historial = document.getElementById('historial'); 
+    historial.style.display ='block'
+
+    let nuevoResultado = document.createElement('span');
+    let nuevaOperacion = document.createElement('span');
+
+    nuevoResultado.classList.add('resultado');
+    nuevaOperacion.classList.add('operacion');
+    nuevoResultado.textContent = resultado;
+    nuevaOperacion.textContent = operacion;
+
+    historial.appendChild(nuevoResultado);
+    historial.appendChild(nuevaOperacion);
 }

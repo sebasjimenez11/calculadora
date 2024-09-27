@@ -163,8 +163,7 @@ class Calculadora
         if (!is_array($this->historial)) {
             $this->historial = [];
         }
-        array_push($this->historial, $total);
-        array_push($this->historial, $operacion);
+        array_push($this->historial, ["Total" => $total, 'Operacion' => $operacion]);
         $this->saveState();
     }
 

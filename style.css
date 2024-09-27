@@ -36,7 +36,7 @@
     padding: 1.5%;
     color: #252422;
     border: .8px solid #403D39;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 500;
     resize: none;
 }
@@ -47,13 +47,18 @@
     height: 9%;
 }
 
-.btnBorrar #borrar{
-    width: 60%;
+.btnBorrar #borrar {
+    width: 40%;
     height: 80%;
 }
 
-.btnBorrar #limpiar{
-    width: 30%;
+.btnBorrar #limpiar {
+    width: 25%;
+    height: 80%;
+}
+
+.btnBorrar #btn-historial{
+    width:  25%;
     height: 80%;
 }
 
@@ -76,4 +81,21 @@
     border: none;
     background: #252422;
     color: #FFFCF2;
+}
+
+#historial {
+    width: 250px;
+    max-height: 55vh;
+    margin: 0 2%;
+    background: #CCC5B9;
+    text-align: left;
+    padding: 1%;
+    overflow-y: auto;
+    display: none;
+}
+
+.resultado,
+.operacion {
+    display: block;
+    cursor: pointer;
 }

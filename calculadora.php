@@ -52,7 +52,7 @@ if (isset($Data['OP']) && isset($Data['valor'])) {
             $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '', $Data['validacion']));
             $calculadora->setOperandos($valorOperando);
             $valorTotal = $calculadora->total();
-            $calculadora->setHistorial($Data['valor'],$valorTotal);
+            $calculadora->setHistorial($calculadora->getOperacionAnterior(),$valorTotal);
             $calculadora->clear();
             echo json_encode(['value' => $valorTotal]);
             break;
@@ -68,7 +68,7 @@ if (isset($Data['OP']) && isset($Data['valor'])) {
             break;
 
         case 'historial':
-
+            echo json_encode(['value' => $calculadora->getHitorial()]);
             break;
         default:
             echo json_encode(['Error' => 'Operación no válida']);
