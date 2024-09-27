@@ -158,9 +158,14 @@ class Calculadora
         return $this->historial;
     }
 
-    public function setHostorial($operacion, $total)
+    public function setHistorial($operacion, $total)
     {
-        array_push($this->historial, [$total => $operacion]);
+        if (!is_array($this->historial)) {
+            $this->historial = [];
+        }
+        array_push($this->historial, $total);
+        array_push($this->historial, $operacion);
+        $this->saveState();
     }
 
     public function borrarHistorial() {}

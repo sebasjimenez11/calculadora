@@ -52,6 +52,7 @@ if (isset($Data['OP']) && isset($Data['valor'])) {
             $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '', $Data['validacion']));
             $calculadora->setOperandos($valorOperando);
             $valorTotal = $calculadora->total();
+            $calculadora->setHistorial($Data['valor'],$valorTotal);
             $calculadora->clear();
             echo json_encode(['value' => $valorTotal]);
             break;

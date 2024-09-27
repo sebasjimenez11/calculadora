@@ -7,7 +7,6 @@ let numero = 0;
 let operacion = true;
 let punto = 0;
 
-
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
         case "+":
@@ -128,23 +127,6 @@ const agregar = (content) => {
         valorActual.value = content;
     } else {
         valorActual.value = valorActual.value + content
-    }
-}
-
-const valorOperando = () => {
-    if (operacion === 0) {
-        valorAnteriror = valorActual.value;
-        console.log(valorActual.value);
-        operacion = 1;
-        return valorActual.value;
-    } else {
-        let valor = 0;
-        for (let i = 0; i < valorActual.value.length; i++) {
-            if (valorActual.value[i] != valorAnteriror[i]) {
-                valor += valorActual.value[i];
-            }
-        }
-        return valor;
     }
 }
 
