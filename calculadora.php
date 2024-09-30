@@ -13,6 +13,7 @@ if ($Data) {
 }
 
 include_once 'Classes/Calculadora.php';
+include_once 'Classes/Database.php';
 $calculadora = new Calculadora;
 $valorOperando = 0;
 

@@ -21,7 +21,7 @@
     padding: .5% .3%;
     width: 300px;
     height: 400px;
-    background-color: #f35b04;
+    background: linear-gradient(to bottom, #f35b04, #a54208);
     border-radius: 20px;
     box-shadow: 15px 15px 5px #252422;
 }
@@ -92,6 +92,7 @@
     padding: 1%;
     overflow-y: auto;
     display: none;
+    border-radius: 10px;
 }
 
 .resultado,
