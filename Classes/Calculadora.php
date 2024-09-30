@@ -1,6 +1,6 @@
 <?php
 
-include_once './Database.php';
+include_once 'Database.php';
 
 class Calculadora
 {
@@ -43,17 +43,22 @@ class Calculadora
         $valorOperando = "";
 
         $minLength = min(strlen($operacion), strlen($operacionAnterior));
-
         for ($i = 0; $i < $minLength; $i++) {
             if ($operacion[$i] != $operacionAnterior[$i]) {
                 $valorOperando .= substr($operacion, $i);
                 break;
             }
         }
+
         if (strlen($operacion) > $minLength) {
             $valorOperando .= substr($operacion, $minLength);
         }
-        return $valorOperando;
+
+        if (preg_match('/^[+\-*\/]/', $valorOperando)) {
+            $valorOperando = substr($valorOperando, 1);
+        }
+
+        return trim($valorOperando); 
     }
 
 
@@ -62,10 +67,10 @@ class Calculadora
     {
         try {
             $stmt = $this->conn->prepare('SELECT operandos FROM calculadora WHERE Id = :Id');
-            $stmt->bindParams(':Id', $Id);
+            $stmt->bindParam(':Id', $Id);
             $stmt->execute();
-
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
             if ($result && isset($result['operandos'])) {
                 return json_decode($result['operandos'], true);
             }
@@ -75,11 +80,12 @@ class Calculadora
         }
     }
 
+
     public function getOperaradores($Id)
     {
         try {
             $stmt = $this->conn->prepare('SELECT operadores FROM calculadora WHERE Id = :Id');
-            $stmt->conn->bindParams(':Id', $Id);
+            $stmt->bindParam(':Id', $Id);
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -99,7 +105,7 @@ class Calculadora
     {
         try {
             $stmt = $this->conn->prepare('SELECT operacion_actual FROM calculadora WHERE Id = :Id');
-            $stmt->bindParams(':Id', $Id);
+            $stmt->bindParam(':Id', $Id);
             $stmt->execute();
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -115,29 +121,32 @@ class Calculadora
         }
     }
 
-    public function updateOperacion($operacion, $operandos, $operadores, $Id = null, $resltado = 0)
+    public function updateOperacion($operacion, $operandos, $operadores, $Id = null)
     {
         try {
-            if ($Id) {
+            if ($Id != null) {
                 $stmt = $this->conn->prepare('UPDATE calculadora SET operadores = :operadores, operandos = :operandos, operacion_actual = :operacion WHERE Id = :Id');
-
-                $stmt->execute(array(':operadores' => $operadores, ':operandos' => $operandos, ':operacion' => $operacion, ':Id' => $Id));
-
-                return $this->conn->lastInsertId();
-            } else if ($resltado) {
-                $stmt = $this->conn->prepare('UPDATE calculadora SET operadores = :operadores, operandos = :operandos, operacion_actual = :operacion, resultado WHERE Id = :Id');
-
-                $stmt->execute(array(':operadores' => $operadores, ':operandos' => $operandos, ':operacion' => $operacion, ':Id' => $Id));
-
+                $stmt->execute(array(':operadores' => json_encode($operadores), ':operandos' => json_encode($operandos), ':operacion' => $operacion, ':Id' => $Id));
                 return $this->conn->lastInsertId();
             } else {
-                $stmt = $this->conn->prepare('INSERT INTO calculadore(operadores, operandos, operacion_actual, resultado) VALUES (:operadores, :operandos, :operacion, NULL)');
-                $stmt->execute(array(':operadores' => $operadores, ':operandos' => $operandos, ':operacion' => $operacion));
-
+                $stmt = $this->conn->prepare('INSERT INTO calculadora (operadores, operandos, operacion_actual, resultado) VALUES (:operadores, :operandos, :operacion, NULL)');
+                $stmt->execute(array(':operadores' => json_encode($operadores), ':operandos' => json_encode($operandos), ':operacion' => $operacion));
                 return $this->conn->lastInsertId();
             }
         } catch (PDOException $e) {
-            echo 'Error al obtener los operandores: ' . $e->getMessage();
+            echo 'Error al crear las operaciones: ' . $e->getMessage();
+            return NULL;
+        }
+    }
+
+    public function actualizarTotal($operandos, $operadores, $operacion, $Id, $resultado)
+    {
+        try {
+            $stmt = $this->conn->prepare('UPDATE calculadora SET operadores = :operadores, operandos = :operandos, operacion_actual = :operacion, resultado = :resultado WHERE Id = :Id');
+            $stmt->execute(array(':operadores' => json_encode($operadores), ':operandos' => json_encode($operandos), ':operacion' => $operacion, ':Id' => $Id, ':resultado' => $resultado));
+            return $this->conn->lastInsertId();
+        } catch (PDOException $e) {
+            echo 'Error al crear las operaciones: ' . $e->getMessage();
             return NULL;
         }
     }
@@ -145,7 +154,7 @@ class Calculadora
     public function getHistorial()
     {
         try {
-            $stmt = $this->conn->prepare('SELECT operacion, resultado FROM calculadora');
+            $stmt = $this->conn->prepare('SELECT operacion_actual, resultado FROM calculadora');
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -159,7 +168,7 @@ class Calculadora
     public function borrarHistorial()
     {
         try {
-            $stmt = $this->conn->prepare('TRUNCATE TABLE nombre_de_tu_tabla');
+            $stmt = $this->conn->prepare('TRUNCATE TABLE calculadora');
             $stmt->execute();
 
             return '';
@@ -181,7 +190,7 @@ class Calculadora
             if ($registrosEliminados > 0) {
                 return "";
             } else {
-                return"";
+                return "";
             }
         } catch (PDOException $e) {
             echo "Error al eliminar el registro: " . $e->getMessage();

@@ -55,3 +55,8 @@ function borrarHistorial(){
     global $calculadora;
     return $calculadora->borrarHistorial();
 }
+
+function actualizarTotal($operandos, $operadores, $operacion, $Id, $resultado){
+    global $calculadora;
+    return $calculadora->actualizarTotal($operandos, $operadores, $operacion, $Id, $resultado);
+}

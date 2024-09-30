@@ -1,5 +1,5 @@
 <?php
-include_once './calculadora.php';
+include_once 'calculadora.php';
 
 $Data = file_get_contents('php://input');
 if ($Data) {
@@ -13,8 +13,8 @@ if ($Data) {
 }
 
 header('Content-Type: application/json');
-if (isset($Data['Opc']) && isset($Data['operacion']) && isset($Data['NumOperacion'])) {
-    if ($Data['Opc'] == '+' && $Data['Opc'] == '-' && $Data['Opc'] == '*' && $Data['Opc'] == '/' && isset($Data['Id'])) {
+if (isset($Data['Opc']) && isset($Data['operacion'])) {
+    if (in_array($Data['Opc'], ['+', '-', '*', '/']) && isset($Data['Id']) != null) {
         $operandos = traerOperandos($Data['Id']);
         $operadores = traerOperadores($Data['Id']);
         $operacionAnterior = operacionActual($Data['Id']);
@@ -23,8 +23,9 @@ if (isset($Data['Opc']) && isset($Data['operacion']) && isset($Data['NumOperacio
         array_push($operandos, $Data['Opc']);
         array_push($operadores, floatval($numeroOperador));
 
-        guardarOperacion($Data['operacion'], $operandos, $operadores, $Id);
-    } else  {
+        guardarOperacion($Data['operacion'], $operandos, $operadores, $Data['Id']);
+        echo json_encode(['value' => $Data['operacion'] . $Data['Opc'], 'Id' =>  $Data['Id']]);
+    } else {
         switch ($Data['Opc']) {
             case 'total':
                 $operandos = traerOperandos($Data['Id']);
@@ -33,9 +34,10 @@ if (isset($Data['Opc']) && isset($Data['operacion']) && isset($Data['NumOperacio
                 $numeroOperador = numeroOperando($Data['operacion'], $operacionAnterior);
 
                 array_push($operadores, floatval($numeroOperador));
-                $total = totalOperacion($operandos, $operadores);
-                guardarOperacion($Data['operacion'], $operandos, $operadores, $Id, $total);
-                echo json_encode(['value'=>$total]);
+                $total = totalOperacion($operadores, $operandos);
+                actualizarTotal($operandos,$operadores, $Data['operacion'], $Data['Id'],$total);
+                echo json_encode(['value' => $total]);
+                break;
             case 'historial':
                 echo json_encode(['value' => traerHistorial()]);
                 break;
@@ -49,14 +51,16 @@ if (isset($Data['Opc']) && isset($Data['operacion']) && isset($Data['NumOperacio
                 echo json_encode(['value' => borrarHistorial()]);
                 break;
             default:
-                $operacionAnterior = [];
-                $operadores = [];
+                if (in_array($Data['Opc'], ['+', '-', '*', '/'])) {
+                    $operandos = [];
+                    $operadores = [];
 
-                array_push($operandos, $Data['Opc']);
-                array_push($operadores, floatval($Data['operacion']));
+                    array_push($operandos, $Data['Opc']);
+                    array_push($operadores, floatval($Data['operacion']));
 
-                $Id = guardarOperacion($Data['operacion'], $operandos, $operadores, $Id);
-                echo json_encode(['value' => $Data['operacion'] . $Data['Opc'], 'Id' => $Id]);
+                    $Id = guardarOperacion($Data['operacion'], $operandos, $operadores);
+                    echo json_encode(['value' => $Data['operacion'] . $Data['Opc'], 'Id' => $Id]);
+                }
                 break;
         }
     }

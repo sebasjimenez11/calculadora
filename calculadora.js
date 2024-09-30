@@ -4,7 +4,7 @@ let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 let operaciones = ['+', '/', '*', '-'];
 let valor = 0;
 let numero = 0;
-let operacion = true;
+let operacion = 0;
 let punto = 0;
 
 document.addEventListener('keydown', (e) => {
@@ -85,29 +85,29 @@ btn.forEach((btn) => {
 const calculadora = async (accion) => {
     switch (accion) {
         case 'suma':
-            valor = await peticionServidor(valorActual.value, 'suma', operacion);
+            valor = await peticionServidor(valorActual.value, '+', operacion);
             valorActualPantalla(valor);
-            operacion = false;
+            operacion = 1;
             break;
         case 'resta':
-            valor = await peticionServidor(valorActual.value, 'resta', operacion);
+            valor = await peticionServidor(valorActual.value, '-', operacion);
             valorActualPantalla(valor);
-            operacion = false;
+            operacion = 1;
             break;
         case 'division':
-            valor = await peticionServidor(valorActual.value, 'division', operacion);
+            valor = await peticionServidor(valorActual.value, '/', operacion);
             valorActualPantalla(valor);
-            operacion = false;
+            operacion = 1;
             break;
         case 'multiplicacion':
-            valor = await peticionServidor(valorActual.value, 'multiplicacion', operacion);
+            valor = await peticionServidor(valorActual.value, '*', operacion);
             valorActualPantalla(valor);
-            operacion = false;
+            operacion = 1;
             break;
         case 'total':
             valor = await peticionServidor(valorActual.value, 'total', operacion);
             valorActualPantalla(valor);
-            operacion = true;
+            operacion = 0;
             break;
         case 'borrar':
             borrar();
@@ -122,10 +122,10 @@ const calculadora = async (accion) => {
             }
             break;
         case 'historial':
-            const data = await peticionServidor('historial', 'historial', true);
+            const data = await peticionServidor('historial', 'historial', operacion);
             if (Array.isArray(data)) {
                 for (let i = 0; i < data.length; i++) {
-                    historialCalculadora(data[i].Total, data[i].Operacion)
+                    historialCalculadora(data[i].operacion_actual, data[i].resultado)
                 }
             }
         default: break;
@@ -141,11 +141,12 @@ const agregar = (content) => {
 }
 
 const limpiar = () => {
-    peticionServidor('limpiar', 'limpiar');
+    peticionServidor('limpiar', 'limpiar', operacion);
     valorAnteriror = valorActual.value;
     punto = 0;
     valorActual.value = 0;
-    operacion = true;
+    operacion = 0;
+    localStorage.removeItem('Id');
 }
 
 const borrar = async () => {
@@ -154,7 +155,7 @@ const borrar = async () => {
         if (operaciones.includes(valorInput[valorInput.length - 1])) {
             valorActual.value = valorInput.slice(0, -1);
             valorAnteriror = valorActual.value;
-            await peticionServidor('borrar', 'borrar');
+            await peticionServidor('borrar', 'borrar', operacion);
         } else if (valorInput[valorInput.length - 1] === '.') {
             punto = 0;
             valorActual.value = valorInput.slice(0, -1);
@@ -165,7 +166,7 @@ const borrar = async () => {
         }
     } else {
         valorActual.value = 0;
-        operacion = true;
+        operacion = 0;
     }
 }
 
@@ -181,17 +182,22 @@ const validarNumeros = (caracter) => {
     }
 }
 
-const peticionServidor = async (valorOperando, operador, validacion) => {
+const peticionServidor = async (valorOperando, operador, NumOperacion) => {
     try {
+        let Id = localStorage.getItem('Id');
+        if (Id === 'undefined') {
+            Id = null;
+        }
         const response = await fetch('/server.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                valor: valorOperando,
-                OP: operador,
-                validacion: validacion,
+                operacion: valorOperando,
+                Opc: operador,
+                NumOperacion: NumOperacion,
+                Id: Id 
             })
         });
 
@@ -199,6 +205,7 @@ const peticionServidor = async (valorOperando, operador, validacion) => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
+        localStorage.setItem('Id',data.Id);
         return data.value;
     } catch (error) {
         console.error('Error en la peticion:', error);
