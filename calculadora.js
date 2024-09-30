@@ -183,7 +183,7 @@ const validarNumeros = (caracter) => {
 
 const peticionServidor = async (valorOperando, operador, validacion) => {
     try {
-        const response = await fetch('/calculadora.php', {
+        const response = await fetch('/server.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

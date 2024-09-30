@@ -1,80 +1,57 @@
 <?php
-session_start();
-
-$Data = file_get_contents('php://input');
-if ($Data) {
-    $Data = json_decode($Data, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        echo json_encode(['Error' => 'Datos JSON inválidos']);
-        exit;
-    }
-} else {
-    die('{"Error":"any"}');
-}
 
 include_once 'Classes/Calculadora.php';
-include_once 'Classes/Database.php';
-$calculadora = new Calculadora;
-$valorOperando = 0;
 
-header('Content-Type: application/json');
+$calculadora = new Calculadora();
 
-if (isset($Data['OP']) && isset($Data['valor'])) {
-    switch ($Data['OP']) {
-        case 'suma':
-            $calculadora->setOperadores('+');
-            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '+', $Data['validacion']));
-            $calculadora->setOperandos($valorOperando);
-            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
-            break;
+function operacionActual($Id)
+{
+    global $calculadora;
+    return $calculadora->getOperacionActual($Id);
+}
 
-        case 'resta':
-            $calculadora->setOperadores('-');
-            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '-', $Data['validacion']));
-            $calculadora->setOperandos($valorOperando);
-            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
-            break;
+function guardarOperacion($operacion, $operandos, $operadores, $Id = null, $resultado = 0)
+{
+    global $calculadora;
+    return $calculadora->updateOperacion($operacion, $operandos, $operadores, $Id, $resultado);
+}
 
-        case 'multiplicacion':
-            $calculadora->setOperadores('*');
-            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '*', $Data['validacion']));
-            $calculadora->setOperandos($valorOperando);
-            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
-            break;
+function numeroOperando($operacion, $operacionAnterior)
+{
+    global $calculadora;
+    return $calculadora->getNumOperando($operacion, $operacionAnterior);
+}
 
-        case 'division':
-            $calculadora->setOperadores('/');
-            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '/', $Data['validacion']));
-            $calculadora->setOperandos($valorOperando);
-            echo json_encode(['value' => $calculadora->getOperacionAnterior()]);
-            break;
+function limpiar($Id)
+{
+    global $calculadora;
+    return $calculadora->limpiar($Id);
+}
 
-        case 'total':
-            $valorOperando = floatval($calculadora->getNumOperando($Data['valor'], '', $Data['validacion']));
-            $calculadora->setOperandos($valorOperando);
-            $valorTotal = $calculadora->total();
-            $calculadora->setHistorial($calculadora->getOperacionAnterior(),$valorTotal);
-            $calculadora->clear();
-            echo json_encode(['value' => $valorTotal]);
-            break;
+function traerOperandos($Id)
+{
+    global $calculadora;
+    return $calculadora->getOperandos($Id);
+}
 
-        case 'borrar':
-            $calculadora->borrar();
-            echo json_encode(['message' => 'Datos borrados']);
-            break;
+function traerOperadores($Id)
+{
+    global $calculadora;
+    return $calculadora->getOperaradores($Id);
+}
 
-        case 'limpiar':
-            $calculadora->clear();
-            echo json_encode(['message' => 'Datos limpiados']);
-            break;
+function traerHistorial()
+{
+    global $calculadora;
+    return $calculadora->getHistorial();
+}
 
-        case 'historial':
-            echo json_encode(['value' => $calculadora->getHitorial()]);
-            break;
-        default:
-            echo json_encode(['Error' => 'Operación no válida']);
-            break;
-    }
-} else {
-    echo json_encode(['Error' => 'No se recibieron los datos necesarios']);
+function totalOperacion($operandos, $operadores){
+    global $calculadora;
+    return $calculadora->total($operandos, $operadores);
+}
+
+function borrarHistorial(){
+    global $calculadora;
+    return $calculadora->borrarHistorial();
 }
