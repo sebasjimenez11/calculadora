@@ -1,8 +1,9 @@
 import { peticionServidor } from "./peticionesServidor.js";
 const modal = document.querySelector('.modal');
+const historial = document.getElementById('contenido-historial');
 
-export const openModal = async (operacion) => {
-    const data = await peticionServidor('historial', 'historial', operacion);
+export const openModal = async () => {
+    const data = await peticionServidor('historial', 'historial');
     if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
             historialCalculadora(data[i].operacion_actual, data[i].resultado)
@@ -11,8 +12,7 @@ export const openModal = async (operacion) => {
     modal.style.display = 'grid';
 }
 
-export const historialCalculadora = async (operacion, resultado) => {
-    let historial = document.getElementById('contenido-historial');
+export const historialCalculadora = (operacion, resultado) => {
     let nuevoContenedor = document.createElement('div');
     let nuevoResultado = document.createElement('span');
     let nuevaOperacion = document.createElement('span');
@@ -30,7 +30,19 @@ export const historialCalculadora = async (operacion, resultado) => {
 }
 
 export const closeModal = () => {
-    modal.style.display = 'none';
+    historial.innerHTML = ''; 
+    modal.style.display = 'none'; 
+}
+
+export const borrarHistorial = async () => {
+    await peticionServidor('borrarHistorial', 'borrarHistorial');
+    historial.innerHTML = ''; 
+    const data = await peticionServidor('historial', 'historial');
+    if (Array.isArray(data)) {
+        for (let i = 0; i < data.length; i++) {
+            historialCalculadora(data[i].operacion_actual, data[i].resultado)
+        }
+    }
 }
 
 window.addEventListener('click', (event) => {

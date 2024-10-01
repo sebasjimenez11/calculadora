@@ -1,37 +1,31 @@
 import { peticionServidor } from './peticionesServidor.js';
-import { openModal } from './historial.js';
+import { borrarHistorial, openModal } from './historial.js';
 let operaciones = ['+', '/', '*', '-'];
 let valor = 0;
 let valorActual = document.querySelector('.pantalla');
-let operacion = 0;
 let punto = 0;
 
 export const calculadora = async (accion) => {
     switch (accion) {
         case 'suma':
-            valor = await peticionServidor(valorActual.value, '+', operacion);
+            valor = await peticionServidor(valorActual.value, '+');
             valorActualPantalla(valor);
-            operacion = 1;
             break;
         case 'resta':
-            valor = await peticionServidor(valorActual.value, '-', operacion);
+            valor = await peticionServidor(valorActual.value, '-');
             valorActualPantalla(valor);
-            operacion = 1;
             break;
         case 'division':
-            valor = await peticionServidor(valorActual.value, '/', operacion);
+            valor = await peticionServidor(valorActual.value, '/');
             valorActualPantalla(valor);
-            operacion = 1;
             break;
         case 'multiplicacion':
-            valor = await peticionServidor(valorActual.value, '*', operacion);
+            valor = await peticionServidor(valorActual.value, '*');
             valorActualPantalla(valor);
-            operacion = 1;
             break;
         case 'total':
-            valor = await peticionServidor(valorActual.value, 'total', operacion);
+            valor = await peticionServidor(valorActual.value, 'total');
             valorActualPantalla(valor);
-            operacion = 0;
             break;
         case 'borrar':
             borrar();
@@ -46,7 +40,11 @@ export const calculadora = async (accion) => {
             }
             break;
         case 'historial':
-            openModal(operacion);
+            openModal();
+            break;
+        case 'borrarHistorial':
+            borrarHistorial();
+            break;
         default: break;
     }
 }
@@ -60,10 +58,9 @@ export const agregar = (content) => {
 }
 
 const limpiar = () => {
-    peticionServidor('limpiar', 'limpiar', operacion);
+    peticionServidor('limpiar', 'limpiar');
     punto = 0;
     valorActual.value = 0;
-    operacion = 0;
     localStorage.removeItem('Id');
 }
 
@@ -71,9 +68,9 @@ const borrar = async () => {
     let valorInput = valorActual.value;
     if (valorInput.length > 1) {
         if (operaciones.includes(valorInput[valorInput.length - 1])) {
-            valorActual.value = valorInput.slice(0, -1);
-            valorAnteriror = valorActual.value;
-            await peticionServidor('borrar', 'borrar', operacion);
+            valorInput = valorInput.slice(0, -1);
+            valorInput = await peticionServidor(valorInput, 'borrar');
+            valorActual.value = valorInput;
         } else if (valorInput[valorInput.length - 1] === '.') {
             punto = 0;
             valorActual.value = valorInput.slice(0, -1);
@@ -83,8 +80,7 @@ const borrar = async () => {
             valorActual.value = valorInput.slice(0, -1);
         }
     } else {
-        valorActual.value = 0;
-        operacion = 0;
+        limpiar();
     }
 }
 

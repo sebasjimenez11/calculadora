@@ -58,7 +58,7 @@ class Calculadora
             $valorOperando = substr($valorOperando, 1);
         }
 
-        return trim($valorOperando); 
+        return trim($valorOperando);
     }
 
 
@@ -182,19 +182,40 @@ class Calculadora
     {
         try {
             $stmt = $this->conn->prepare('DELETE FROM calculadora WHERE Id = :id');
-            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
             $registrosEliminados = $stmt->rowCount();
 
             if ($registrosEliminados > 0) {
-                return "";
+                return "error";
             } else {
-                return "";
+                return 0;
             }
         } catch (PDOException $e) {
             echo "Error al eliminar el registro: " . $e->getMessage();
         }
+    }
+
+    public function borrarOperacionActual($operacion, $operandos, $operadores)
+    {
+        if (is_array($operandos)) {
+            array_pop($operandos);
+        }
+        if (is_array($operadores)) {
+            array_pop($operadores);
+        }
+
+        $corte = 0;
+
+        for ($i=0; $i < strlen($operacion) ; $i++) { 
+            if (preg_match('/^[+\-*\/]/', $operacion[$i])) {
+                $corte = $i;
+            }
+        }
+
+        $operacion = substr($operacion, 0, $corte);
+        return [$operacion, $operandos, $operadores];
     }
 
     public function __construct()

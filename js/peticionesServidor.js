@@ -1,4 +1,4 @@
-export const peticionServidor = async (valorOperando, operador, NumOperacion) => {
+export const peticionServidor = async (valorOperando, operador) => {
     try {
         let Id = localStorage.getItem('Id');
         if (Id === 'undefined') {
@@ -12,7 +12,6 @@ export const peticionServidor = async (valorOperando, operador, NumOperacion) =>
             body: JSON.stringify({
                 operacion: valorOperando,
                 Opc: operador,
-                NumOperacion: NumOperacion,
                 Id: Id
             })
         });

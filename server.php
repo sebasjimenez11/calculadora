@@ -42,10 +42,15 @@ if (isset($Data['Opc']) && isset($Data['operacion'])) {
                 echo json_encode(['value' => traerHistorial()]);
                 break;
             case 'limpiar':
-                limpiar($Data['NumOperacion']);
-                echo json_encode(['value' => 0]);
+                $valor= limpiar($Data['Id']);
+                echo json_encode(['value' => $valor, 'dataId' => $Data['Id']]);
                 break;
             case 'borrar':
+                $operandos = traerOperandos($Data['Id']);
+                $operadores = traerOperadores($Data['Id']);
+                $borrarOperacion = borrarOperacionActual($Data['operacion'],$operandos,$operadores);
+                guardarOperacion($borrarOperacion[0],$borrarOperacion[1],$borrarOperacion[2], $Data['Id']);
+                echo json_encode(['value' => $Data['operacion'], 'Id' =>  $Data['Id']]);
                 break;
             case 'borrarHistorial':
                 echo json_encode(['value' => borrarHistorial()]);
@@ -61,7 +66,7 @@ if (isset($Data['Opc']) && isset($Data['operacion'])) {
                     $Id = guardarOperacion($Data['operacion'], $operandos, $operadores);
                     echo json_encode(['value' => $Data['operacion'] . $Data['Opc'], 'Id' => $Id]);
                 }
-                break;
+            break;
         }
     }
 }

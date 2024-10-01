@@ -69,7 +69,10 @@ btn.forEach((btn) => {
                 calculadora('punto');
                 break;
             case 'btn-historial':
-                calculadora('historial')
+                calculadora('historial');
+                break;
+            case 'borrar-historial':
+                calculadora('borrarHistorial');
                 break;
             case 'close':
                 closeModal();

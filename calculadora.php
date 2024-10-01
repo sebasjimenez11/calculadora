@@ -10,10 +10,10 @@ function operacionActual($Id)
     return $calculadora->getOperacionActual($Id);
 }
 
-function guardarOperacion($operacion, $operandos, $operadores, $Id = null, $resultado = 0)
+function guardarOperacion($operacion, $operandos, $operadores, $Id = null)
 {
     global $calculadora;
-    return $calculadora->updateOperacion($operacion, $operandos, $operadores, $Id, $resultado);
+    return $calculadora->updateOperacion($operacion, $operandos, $operadores, $Id);
 }
 
 function numeroOperando($operacion, $operacionAnterior)
@@ -59,4 +59,9 @@ function borrarHistorial(){
 function actualizarTotal($operandos, $operadores, $operacion, $Id, $resultado){
     global $calculadora;
     return $calculadora->actualizarTotal($operandos, $operadores, $operacion, $Id, $resultado);
+}
+
+function borrarOperacionActual($operacion, $operandos, $operadores){
+    global $calculadora;
+    return $calculadora->borrarOperacionActual($operacion, $operandos, $operadores);
 }
