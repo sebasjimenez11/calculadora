@@ -14,14 +14,16 @@
     width: 100%;
     height: 100vh;
     text-align: center;
-    background: #403D39;
+    background: rgb(22, 20, 22);
+    background: linear-gradient(333deg, rgba(22, 20, 22, 1) 0%, rgba(53, 52, 56, 1) 48%, rgba(28, 26, 29, 1) 100%);
 }
 
 .calculadora {
     padding: .5% .3%;
     width: 300px;
     height: 400px;
-    background: linear-gradient(to bottom, #f35b04, #a54208);
+    background: rgb(24, 136, 133);
+    background: linear-gradient(333deg, rgba(24, 136, 133, 1) 10%, rgba(50, 183, 179, 1) 53%, rgba(61, 204, 199, 1) 87%, rgba(104, 216, 214, 1) 100%);
     border-radius: 20px;
     box-shadow: 15px 15px 5px #252422;
 }
@@ -31,7 +33,8 @@
     margin: 5% auto 0;
     width: 90%;
     height: 20%;
-    background: #CCC5B9;
+    background: rgb(69, 69, 69);
+    background: linear-gradient(45deg, rgba(139, 139, 139, 1) 35%, rgba(181, 181, 181, 1) 61%, rgba(211, 211, 211, 1) 98%);
     border-radius: 5px;
     padding: 1.5%;
     color: #252422;
@@ -57,8 +60,8 @@
     height: 80%;
 }
 
-.btnBorrar #btn-historial{
-    width:  25%;
+.btnBorrar #btn-historial {
+    width: 25%;
     height: 80%;
 }
 
@@ -79,12 +82,14 @@
     border-radius: 22px;
     font-size: 18px;
     border: none;
-    background: #252422;
+    background: rgb(22, 26, 29);
+    background: linear-gradient(45deg, rgba(22, 26, 29, 1) 33%, rgba(69, 69, 69, 1) 98%);
     color: #FFFCF2;
+    cursor: pointer;
 }
 
 .modal {
-    display: grid;
+    display: none;
     place-items: center;
     width: 100%;
     height: 100%;
@@ -95,11 +100,18 @@
     background: #25242263;
 }
 
+
+
 #historial {
-    width: 40%;
-    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 30vw;
+    height: 65vh;
     margin: auto;
-    background: #CCC5B9;
+    background: rgb(69, 69, 69);
+    background: linear-gradient(45deg, rgba(139, 139, 139, 1) 35%, rgba(181, 181, 181, 1) 61%, rgba(211, 211, 211, 1) 98%);
     text-align: left;
     padding: 1%;
     overflow: hidden;
@@ -108,10 +120,10 @@
 }
 
 #contenido-historial {
-    height: 100%;
+    height: 85%;
     overflow-y: auto;
     padding-right: 10px;
-    padding-top: 2%;
+    margin-top: 1%;
 }
 
 #contenido-historial::-webkit-scrollbar {
@@ -119,7 +131,8 @@
 }
 
 #contenido-historial::-webkit-scrollbar-thumb {
-    background-color: #7d7d7d;
+    background: rgb(22, 26, 29);
+    background: linear-gradient(45deg, rgba(22, 26, 29, 1) 33%, rgba(69, 69, 69, 1) 98%);
     border-radius: 10px;
 }
 
@@ -143,8 +156,26 @@
     border-radius: 40px;
 }
 
-.resultado,
-.operacion {
+.resultado {
+    font-size: 17px;
+    font-weight: 400;
     display: block;
     cursor: pointer;
+    color: #252422;
+}
+
+.operacion {
+    font-size: 15px;
+    color: #403D39;
+    cursor: pointer;
+}
+
+.container-div {
+    margin: 2% 0;
+}
+
+#borrar-historial {
+    width: 80%;
+    height: 5vh;
+    margin-top: 3%;
 }
