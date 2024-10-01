@@ -1,9 +1,10 @@
-import {calculadora, agregar} from './calculadora.js'
-import { closeModal } from './historial.js';
+import { calculadora, agregar } from './calculadora.js'
+import { closeModal, isOpenModal } from './historial.js';
 const btn = document.querySelectorAll('.btn');
 let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
 document.addEventListener('keydown', (e) => {
+    console.log(e.key);
     switch (e.key) {
         case "+":
             calculadora('suma');
@@ -27,10 +28,25 @@ document.addEventListener('keydown', (e) => {
             calculadora('limpiar');
             break;
         case 'Escape':
-            calculadora('limpiar');
+            if (isOpenModal) {
+                closeModal();
+            } else {
+                calculadora('limpiar');
+            }
+            break;
+        case 'Delete':
+            if (isOpenModal) {
+                calculadora('borrarHistorial');
+            }
             break;
         case 'C':
             calculadora('limpiar');
+            break;
+        case 'h':
+            calculadora('historial');
+            break;
+        case 'H':
+            calculadora('historial');
             break;
         case '.':
             calculadora('punto');

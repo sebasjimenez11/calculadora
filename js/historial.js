@@ -1,8 +1,10 @@
 import { peticionServidor } from "./peticionesServidor.js";
 const modal = document.querySelector('.modal');
 const historial = document.getElementById('contenido-historial');
+export let isOpenModal = false;
 
 export const openModal = async () => {
+    isOpenModal = true;
     const data = await peticionServidor('historial', 'historial');
     if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
@@ -30,6 +32,7 @@ export const historialCalculadora = (operacion, resultado) => {
 }
 
 export const closeModal = () => {
+    isOpenModal = false;
     historial.innerHTML = ''; 
     modal.style.display = 'none'; 
 }
