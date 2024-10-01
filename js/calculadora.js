@@ -45,6 +45,8 @@ export const calculadora = async (accion) => {
         case 'borrarHistorial':
             borrarHistorial();
             break;
+        case 'traerOperacionHistorial':
+            break;
         default: break;
     }
 }

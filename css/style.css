@@ -22,8 +22,8 @@
     padding: .5% .3%;
     width: 300px;
     height: 400px;
-    background: rgb(24, 136, 133);
-    background: linear-gradient(333deg, rgba(24, 136, 133, 1) 10%, rgba(50, 183, 179, 1) 53%, rgba(61, 204, 199, 1) 87%, rgba(104, 216, 214, 1) 100%);
+    background: rgb(69, 69, 69);
+    background: linear-gradient(45deg, rgba(139, 139, 139, 1) 35%, rgba(181, 181, 181, 1) 61%, rgba(211, 211, 211, 1) 98%);
     border-radius: 20px;
     box-shadow: 15px 15px 5px #252422;
 }
@@ -33,17 +33,31 @@
     margin: 5% auto 0;
     width: 90%;
     height: 20%;
-    background: rgb(69, 69, 69);
-    background: linear-gradient(45deg, rgba(139, 139, 139, 1) 35%, rgba(181, 181, 181, 1) 61%, rgba(211, 211, 211, 1) 98%);
+    background: rgb(22, 26, 29);
+    background: linear-gradient(45deg, rgba(22, 26, 29, 1) 33%, rgba(69, 69, 69, 1) 98%);
     border-radius: 5px;
     padding: 1.5%;
-    color: #252422;
+    color: #FFFCF2;
     border: .8px solid #403D39;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 500;
     resize: none;
 }
 
+.pantalla::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pantalla::-webkit-scrollbar-thumb {
+    background: rgb(69, 69, 69);
+    background: linear-gradient(45deg, rgba(139, 139, 139, 1) 35%, rgba(181, 181, 181, 1) 61%, rgba(211, 211, 211, 1) 98%);
+    border-radius: 10px;
+}
+
+.pantalla::-webkit-scrollbar-track {
+    background: none;
+    border-radius: 10px;
+}
 .btnBorrar {
     margin: 1% auto;
     width: 95%;

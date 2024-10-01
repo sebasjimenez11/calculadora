@@ -1,6 +1,8 @@
 import { calculadora, agregar } from './calculadora.js'
 import { closeModal, isOpenModal } from './historial.js';
 const btn = document.querySelectorAll('.btn');
+const resultado = document.querySelectorAll('.resultado');
+const operacion = document.querySelectorAll('.operacion');
 let numeros = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 
 document.addEventListener('keydown', (e) => {
@@ -99,6 +101,19 @@ btn.forEach((btn) => {
         }
     })
 })
+
+resultado.forEach((btn) => {
+    btn.addEventListener('click', () => {
+
+    })
+})
+
+operacion.forEach((btn) => {
+    btn.addEventListener('click', () => {
+        
+    })
+})
+
 
 const validarNumeros = (caracter) => {
     if (numeros.includes(caracter)) {

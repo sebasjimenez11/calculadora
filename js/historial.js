@@ -8,7 +8,7 @@ export const openModal = async () => {
     const data = await peticionServidor('historial', 'historial');
     if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
-            historialCalculadora(data[i].operacion_actual, data[i].resultado)
+            historialCalculadora(data[i].operacion_actual, data[i].resultado);
         }
     }
     modal.style.display = 'grid';
@@ -43,10 +43,17 @@ export const borrarHistorial = async () => {
     const data = await peticionServidor('historial', 'historial');
     if (Array.isArray(data)) {
         for (let i = 0; i < data.length; i++) {
-            historialCalculadora(data[i].operacion_actual, data[i].resultado)
+            historialCalculadora(data[i].operacion_actual, data[i].resultado);
         }
     }
 }
+export const traerOperacionHistorial = async () => {
+    let value = await peticionServidor('','');
+    closeModal();
+    return value;
+}
+
+
 
 window.addEventListener('click', (event) => {
     if (event.target === modal) {
